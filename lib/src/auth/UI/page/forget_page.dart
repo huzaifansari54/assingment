@@ -8,6 +8,7 @@ import '../../../splash/page/widget/custom_button.dart';
 
 class ForgetPage extends StatelessWidget {
   const ForgetPage({super.key});
+  static const routeName = '/forget_password';
 
   @override
   Widget build(BuildContext context) {

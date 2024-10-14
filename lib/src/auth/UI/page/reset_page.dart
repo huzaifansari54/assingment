@@ -8,6 +8,7 @@ import '../widget/custom_filed.dart';
 
 class ResetPasswordPage extends StatelessWidget {
   const ResetPasswordPage({super.key});
+  static const routeName = '/reset_password';
 
   @override
   Widget build(BuildContext context) {

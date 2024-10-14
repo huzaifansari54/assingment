@@ -12,7 +12,7 @@ final _formKey = GlobalKey<FormState>();
 
 class SignInScreen extends ConsumerWidget {
   const SignInScreen({super.key});
-  static const routeName = "/";
+  static const routeName = "sign_in";
 
   @override
   Widget build(BuildContext context, ref) {

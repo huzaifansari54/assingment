@@ -21,6 +21,7 @@ final _basicFormKey = GlobalKey<FormState>();
 
 class RegeisterForm extends ConsumerWidget {
   const RegeisterForm({super.key});
+  static const routeName = '/register';
 
   @override
   Widget build(BuildContext context, ref) {
