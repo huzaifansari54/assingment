@@ -9,7 +9,7 @@ import 'package:softlab/src/splash/page/widget/custom_button.dart';
 
 import '../widget/custom_filed.dart';
 
-final _formKey = GlobalKey<FormState>();
+final _formKeys = GlobalKey<FormState>();
 
 class SignInScreen extends ConsumerWidget {
   const SignInScreen({super.key});
@@ -23,7 +23,7 @@ class SignInScreen extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Form(
-            key: _formKey,
+            key: _formKeys,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,7 +42,7 @@ class SignInScreen extends ConsumerWidget {
                         color: AppColors.gray2),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, RegeisterForm.routeName);
+                        Navigator.pushNamed(context, BasicFormWidget.routeName);
                       },
                       child: "Create account".text(
                           size: 14,
@@ -72,8 +72,10 @@ class SignInScreen extends ConsumerWidget {
                     children: [
                       CustmButton(
                         onTap: () {
-                          if (_formKey.currentState!.validate()) {
-                            ref.read(authProvder.notifier).login(context);
+                          if (_formKeys.currentState!.validate()) {
+                            ref.read(authProvder.notifier).login(context, () {
+                              Navigator.pushNamed(context, "/");
+                            });
                           }
                         },
                         color: AppColors.primary,

@@ -56,7 +56,14 @@ class AuthRepository implements $AuthRepository {
         return _.failure;
       }
       return const AuthFailure.interntOut();
-    }).map((e) => unit);
+    }).flatMap((f) {
+      return TaskEither.tryCatch(() => _localDataSource.saveToken(f), (_, __) {
+        if (_ is AuthException) {
+          return _.failure;
+        }
+        return const AuthFailure.interntOut();
+      }).map((f) => unit);
+    });
   }
 
   @override

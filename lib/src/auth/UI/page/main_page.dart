@@ -19,7 +19,9 @@ class MainPage extends ConsumerWidget {
             color: AppColors.primary,
             title: "logout",
             onTap: () {
-              ref.read(authProvder.notifier).logout(context);
+              ref.read(authProvder.notifier).logout(context, () {
+                Navigator.pushNamed(context, "/");
+              });
             },
           )
         ],

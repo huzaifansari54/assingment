@@ -78,9 +78,9 @@ class HeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           title.text(
               align: TextAlign.center, size: 32, fontWeight: FontWeight.w700),
@@ -89,6 +89,7 @@ class HeaderWidget extends StatelessWidget {
             children: [
               Flexible(
                 child: "$firstLine ".text(
+                    align: TextAlign.center,
                     fontWeight: FontWeight.w400,
                     size: 14,
                     color: AppColors.greyColor),

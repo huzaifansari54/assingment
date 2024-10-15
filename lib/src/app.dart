@@ -6,6 +6,8 @@ import 'package:softlab/src/auth/UI/controller/auth_controller.dart';
 import 'package:softlab/src/auth/UI/page/forget_page.dart';
 import 'package:softlab/src/auth/UI/page/main_page.dart';
 import 'package:softlab/src/auth/UI/page/register/register.dart';
+import 'package:softlab/src/auth/UI/page/register/steps/bussines_form_page.dart';
+import 'package:softlab/src/auth/UI/page/register/steps/inform_page.dart';
 import 'package:softlab/src/auth/UI/page/reset_page.dart';
 import 'package:softlab/src/auth/UI/page/sign_in.dart';
 import 'package:softlab/src/auth/UI/page/verfy_page.dart';
@@ -68,16 +70,27 @@ class MyApp extends ConsumerWidget {
               case "/":
                 return auth.authanticated
                     ? const MainPage()
-                    : const SignInScreen();
-              case RegeisterForm.routeName:
-                return const RegeisterForm();
+                    : const SplashPage();
+              case MainPage.routeName:
+                return const MainPage();
               case ForgetPage.routeName:
                 return const ForgetPage();
               case SignInScreen.routeName:
                 return const SignInScreen();
-
-              default:
+              case SplashPage.routeName:
                 return const SplashPage();
+              case InfoFormWidget.routeName:
+                return InfoFormWidget();
+              case BasicFormWidget.routeName:
+                return BasicFormWidget();
+              case BessinessHoursFormWidget.routeName:
+                return const BessinessHoursFormWidget();
+              case VerificationFormWidget.routeName:
+                return const VerificationFormWidget();
+              case DoneFormWidget.routeName:
+                return const DoneFormWidget();
+              default:
+                throw ErrorWidget("exception");
             }
           },
         );

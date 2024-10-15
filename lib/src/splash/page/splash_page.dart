@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:softlab/core/constants/colors.dart';
 import 'package:softlab/core/constants/value.dart';
 import 'package:softlab/core/extentions/widgets_extension.dart';
+import 'package:softlab/src/auth/UI/page/register/register.dart';
+import 'package:softlab/src/auth/UI/page/sign_in.dart';
 import 'package:softlab/src/splash/core/model/splash_model.dart';
+import 'package:softlab/src/splash/page/widget/custom_button.dart';
 
 import '../../widgest/custom_button.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 
-  static const routeName = '/';
+  static const routeName = '/splash';
 
   @override
   Widget build(BuildContext context) {
@@ -54,19 +57,22 @@ class SplashStepWidget extends StatelessWidget {
                   height: maxheight,
                   decoration: const BoxDecoration(
                       borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(25)),
+                          BorderRadius.vertical(top: Radius.circular(50)),
                       color: AppColors.whiteColor),
                   child: Column(
                     children: [
+                      25.sh,
                       Expanded(
                           child: model.title
                               .text(size: 24, fontWeight: FontWeight.w700)),
-                      Expanded(
+                      SizedBox(
+                        width: maxwidth * 0.8,
                         child: model.description.text(
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w700,
                             align: TextAlign.center,
                             size: 15),
                       ),
+                      20.sh,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -94,9 +100,22 @@ class SplashStepWidget extends StatelessWidget {
                         ],
                       ),
                       const Spacer(),
-                      CustmButton(color: model.colors),
+                      SizedBox(
+                          width: maxwidth * .8,
+                          child: CustmButton(
+                              color: model.colors,
+                              title: "Join the movement!",
+                              onTap: () {
+                                Navigator.pushReplacementNamed(
+                                    context, BasicFormWidget.routeName);
+                              })),
                       10.sh,
-                      "Login".text(),
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacementNamed(
+                                context, SignInScreen.routeName);
+                          },
+                          child: "Login".text()),
                       10.sh
                     ],
                   ),

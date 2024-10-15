@@ -23,7 +23,12 @@ class ForgetPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Spacer(),
+              auth.isLoading
+                  ? const LinearProgressIndicator(
+                      color: AppColors.primary,
+                    )
+                  : 0.sh,
+              const Spacer(),
               "Forgot Password?".text(size: 32, fontWeight: FontWeight.w700),
               Row(
                 children: [

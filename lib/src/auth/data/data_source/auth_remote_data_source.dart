@@ -10,7 +10,7 @@ import 'package:softlab/core/extentions/dio_extension.dart';
 import 'package:softlab/src/auth/data/model/user_model.dart';
 
 abstract interface class $AuthRemoteDataSource {
-  Future<void> login({required String email, required String password});
+  Future<String> login({required String email, required String password});
   Future<String> register(UserModelInfo userInfo);
   Future<void> forgetPassword({required String mobile});
 
@@ -68,7 +68,8 @@ class AuthRemoteDataSource implements $AuthRemoteDataSource {
   }
 
   @override
-  Future<void> login({required String email, required String password}) async {
+  Future<String> login(
+      {required String email, required String password}) async {
     try {
       const endpoint = Endpoint.login;
       final body = {
@@ -88,6 +89,7 @@ class AuthRemoteDataSource implements $AuthRemoteDataSource {
         throw AuthException(AuthFailure.unknown(model.message), model);
       }
       print(response.data);
+      return response.data["token"];
     } on SocketException {
       throw const AuthException(AuthFailure.interntOut());
     } on DioException catch (e) {

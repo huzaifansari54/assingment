@@ -48,16 +48,16 @@ class AuthController extends StateNotifier<AuthState>
       onDone: () {},
     );
   }
-  logout(BuildContext ctx) async {
+  logout(BuildContext ctx, VoidCallback onLogOut) async {
     state = state.copyWith(isLoading: true);
 
     final authOrFail = await _logOutUseCase(param: NoParam()).run();
     authOrFail.match(
         (failure) => state = state.copyWith(error: failure, isLoading: false),
-        (_) => state = state.copyWith(isLoading: false, authanticated: false));
-    if (!state.authanticated) {
-      Navigator.pushNamed(ctx, "/");
-    }
+        (_) {
+      state = state.copyWith(isLoading: false, authanticated: false);
+      onLogOut();
+    });
   }
 
   register(BuildContext ctx, VoidCallback onDone) async {
@@ -109,7 +109,7 @@ class AuthController extends StateNotifier<AuthState>
     }, (_) => state = state.copyWith(isLoading: false));
   }
 
-  login(BuildContext ctx) async {
+  login(BuildContext ctx, VoidCallback onLogin) async {
     state = state.copyWith(isLoading: true);
 
     final authOrFail = await _loginUseCase(
@@ -119,7 +119,10 @@ class AuthController extends StateNotifier<AuthState>
     authOrFail.match((failure) {
       state = state.copyWith(error: failure, isLoading: false);
       showError(failure.$map(), ctx);
-    }, (_) => state = state.copyWith(isLoading: false));
+    }, (_) {
+      state = state.copyWith(isLoading: false);
+      onLogin();
+    });
   }
 
   bool validate(String val) => val.isNotEmpty;
@@ -148,7 +151,10 @@ mixin FormValidator {
     state = state.copyWith(userInfo: $user);
   }
 
-  setRePasword(String val) {}
+  setRePasword(String val) {
+    final $user = state.userInfo.copyWith(role: val);
+    state = state.copyWith(userInfo: $user);
+  }
 
   setEmail(String val) {
     final $user = state.userInfo.copyWith(email: val);

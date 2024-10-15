@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:softlab/core/constants/value.dart';
 import 'package:softlab/core/extentions/widgets_extension.dart';
 import 'package:softlab/src/auth/UI/controller/auth_controller.dart';
+import 'package:softlab/src/auth/UI/page/main_page.dart';
 import 'package:softlab/src/auth/UI/page/reset_page.dart';
 import 'package:softlab/src/auth/UI/page/sign_in.dart';
 import 'package:softlab/src/auth/UI/widget/custom_filed.dart';
@@ -17,133 +18,146 @@ enum statew { UP, KP }
 
 final weekSatate = StateProvider((_) => Week.Mon);
 final pageProvide = Provider((_) => PageController());
-final _basicFormKey = GlobalKey<FormState>();
 
-class RegeisterForm extends ConsumerWidget {
-  const RegeisterForm({super.key});
-  static const routeName = '/register';
+// class RegeisterForm extends ConsumerWidget {
+//   const RegeisterForm({super.key});
+//   static const routeName = '/register';
 
-  @override
-  Widget build(BuildContext context, ref) {
-    final page = ref.watch(pageProvide);
-    return Scaffold(
-      body: SafeArea(
-        child: PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: page,
-          children: const [
-            BasicFormWidget(),
-            BessinessHoursFormWidget(),
-            InfoFormWidget(),
-            VerificationFormWidget(),
-            DoneFormWidget(),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context, ref) {
+//     final page = ref.watch(pageProvide);
+//     return Scaffold(
+//       body: SafeArea(
+//         child: PageView(
+//           physics: const NeverScrollableScrollPhysics(),
+//           controller: page,
+//           children: [
+//             BasicFormWidget(),
+//             BessinessHoursFormWidget(),
+//             InfoFormWidget(),
+//             VerificationFormWidget(),
+//             DoneFormWidget(),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-class BasicFormWidget extends ConsumerWidget {
-  const BasicFormWidget({
+class BasicFormWidget extends ConsumerStatefulWidget {
+  BasicFormWidget({
     super.key,
   });
 
-  @override
-  Widget build(BuildContext context, ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Form(
-        key: _basicFormKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              20.sh,
-              "Welcome!".text(size: 32, fontWeight: FontWeight.w700),
-              30.sh,
-              const IconsHeader(),
-              20.sh,
-              Center(
-                  child: "or signup with".text(
-                      fontWeight: FontWeight.w300, color: AppColors.gray2)),
-              CustomTextFeild(
-                onValidation: (p0) =>
-                    p0 != null && p0.isEmpty ? " enter full name" : null,
-                icon: IconsAssets.person,
-                hint: "Full name",
-                onChange: (text) {
-                  ref.read(authProvder.notifier).setFullName(text);
-                },
-              ),
-              CustomTextFeild(
-                onValidation: (p0) =>
-                    p0 != null && p0.isEmpty ? " enter right email" : null,
-                icon: IconsAssets.email,
-                hint: "Email Address",
-                onChange: (text) {
-                  ref.read(authProvder.notifier).setEmail(text);
-                },
-              ),
-              CustomTextFeild(
-                type: TextInputType.phone,
-                onValidation: (p0) =>
-                    p0 != null && p0.isEmpty ? " enter right number" : null,
-                icon: IconsAssets.phone,
-                hint: "Phone Number",
-                onChange: (text) {
-                  ref.read(authProvder.notifier).setPhone(text);
-                },
-              ),
-              CustomTextFeild(
-                onValidation: (p0) =>
-                    p0 != null && p0.isEmpty ? " enter Password" : null,
-                icon: IconsAssets.password,
-                hint: "Password",
-                onChange: (text) {
-                  ref.read(authProvder.notifier).setPassword(text);
-                },
-              ),
-              CustomTextFeild(
-                onValidation: (p0) => p0!.isEmpty ? " enter Re password" : null,
-                icon: IconsAssets.password,
-                hint: "Re-enter Password",
-                onChange: (text) {
-                  ref.read(authProvder.notifier).setRePasword(text);
-                },
-              ),
-              15.sh,
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, SignInScreen.routeName);
-                    },
-                    child: "Login".text(
-                        size: 15,
-                        color: AppColors.blackColor,
-                        fontWeight: FontWeight.w400),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: 200,
-                    child: CustmButton(
-                      onTap: () {
-                        if ((_basicFormKey.currentState!.validate())) {
-                          ref.read(pageProvide).nextPage(
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.linear);
-                        }
+  static const routeName = '/basic';
 
-                        // ref.read(authProvder.notifier).register(context);
+  @override
+  ConsumerState<BasicFormWidget> createState() => _BasicFormWidgetState();
+}
+
+class _BasicFormWidgetState extends ConsumerState<BasicFormWidget> {
+  final _basicFormKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = ref.watch(authProvder);
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Form(
+          key: _basicFormKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                20.sh,
+                "Welcome!".text(size: 32, fontWeight: FontWeight.w700),
+                30.sh,
+                const IconsHeader(),
+                20.sh,
+                Center(
+                    child: "or signup with".text(
+                        fontWeight: FontWeight.w300, color: AppColors.gray2)),
+                CustomTextFeild(
+                  onValidation: (p0) =>
+                      p0 != null && p0.isEmpty ? " enter full name" : null,
+                  icon: IconsAssets.person,
+                  hint: "Full name",
+                  onChange: (text) {
+                    ref.read(authProvder.notifier).setFullName(text);
+                  },
+                ),
+                CustomTextFeild(
+                  onValidation: (p0) =>
+                      p0 != null && p0.isEmpty ? " enter right email" : null,
+                  icon: IconsAssets.email,
+                  hint: "Email Address",
+                  onChange: (text) {
+                    ref.read(authProvder.notifier).setEmail(text);
+                  },
+                ),
+                CustomTextFeild(
+                  type: TextInputType.phone,
+                  onValidation: (p0) =>
+                      p0 != null && p0.isEmpty ? " enter right number" : null,
+                  icon: IconsAssets.phone,
+                  hint: "Phone Number",
+                  onChange: (text) {
+                    ref.read(authProvder.notifier).setPhone(text);
+                  },
+                ),
+                CustomTextFeild(
+                  onValidation: (p0) =>
+                      p0 != null && p0.isEmpty ? " enter Password" : null,
+                  icon: IconsAssets.password,
+                  hint: "Password",
+                  onChange: (text) {
+                    ref.read(authProvder.notifier).setPassword(text);
+                  },
+                ),
+                CustomTextFeild(
+                  onValidation: (p0) =>
+                      auth.userInfo.password != auth.userInfo.role
+                          ? "wrong password re enter  "
+                          : null,
+                  icon: IconsAssets.password,
+                  hint: "Re-enter Password",
+                  onChange: (text) {
+                    ref.read(authProvder.notifier).setRePasword(text);
+                  },
+                ),
+                15.sh,
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, SignInScreen.routeName);
                       },
-                      color: AppColors.primary,
-                      title: "Continue",
+                      child: "Login".text(
+                          size: 15,
+                          color: AppColors.blackColor,
+                          fontWeight: FontWeight.w400),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    const Spacer(),
+                    SizedBox(
+                      width: 200,
+                      child: CustmButton(
+                        onTap: () {
+                          if ((_basicFormKey.currentState!.validate())) {
+                            Navigator.pushNamed(
+                                context, InfoFormWidget.routeName);
+                          }
+
+                          // ref.read(authProvder.notifier).register(context);
+                        },
+                        color: AppColors.primary,
+                        title: "Continue",
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -155,72 +169,75 @@ class VerificationFormWidget extends ConsumerWidget {
   const VerificationFormWidget({
     super.key,
   });
+  static const routeName = '/verify';
 
   @override
   Widget build(BuildContext context, ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const HeaderWidget(
-              title: "Verification",
-              firstLine:
-                  "Attached proof of Department of Agriculture registrations i.e. Florida Fresh, USDA Approved, USDA Organic",
-              secondLine: ""),
-          15.sh,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              "Attach proof of registration".text(),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                    color: AppColors.primary, shape: BoxShape.circle),
-                child: Image.asset(
-                  IconsAssets.camera,
-                  scale: 2.4,
-                ),
-              )
-            ],
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 25),
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.gray2),
-            child: Row(
+    final auth = ref.watch(authProvder);
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            auth.isLoading
+                ? const LinearProgressIndicator(
+                    color: AppColors.primary,
+                  )
+                : 0.sh,
+            const HeaderWidget(
+                title: "Verification",
+                firstLine:
+                    "Attached proof of Department of Agriculture registrations i.e. Florida Fresh, USDA Approved, USDA Organic",
+                secondLine: ""),
+            15.sh,
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                "usda_registration.pdf".text(),
-                Image.asset(
-                  IconsAssets.cancel,
-                  scale: 2.5,
+                "Attach proof of registration".text(),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                      color: AppColors.primary, shape: BoxShape.circle),
+                  child: Image.asset(
+                    IconsAssets.camera,
+                    scale: 2.4,
+                  ),
                 )
               ],
             ),
-          ),
-          const Spacer(),
-          ArrowWidget(
-            title: "Submit",
-            onBack: () {
-              ref.read(pageProvide).previousPage(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.ease);
-            },
-            onTap: () {
-              ref.read(pageProvide).nextPage(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.ease);
-              // ref.read(authProvder.notifier).register(context, () {
-              //   ref.read(pageProvide).nextPage(
-              //       duration: const Duration(milliseconds: 200),
-              //       curve: Curves.ease);
-              // });
-            },
-          ),
-        ],
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 25),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.gray2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  "usda_registration.pdf".text(),
+                  Image.asset(
+                    IconsAssets.cancel,
+                    scale: 2.5,
+                  )
+                ],
+              ),
+            ),
+            const Spacer(),
+            ArrowWidget(
+              title: "Submit",
+              onBack: () {
+                Navigator.pop(context);
+              },
+              onTap: () {
+                ref.read(authProvder.notifier).register(context, () {
+                  Navigator.pushReplacementNamed(
+                      context, DoneFormWidget.routeName);
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -228,27 +245,37 @@ class VerificationFormWidget extends ConsumerWidget {
 
 class DoneFormWidget extends StatelessWidget {
   const DoneFormWidget({super.key});
+  static const routeName = '/done';
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(
-            IconsAssets.done,
-            scale: 2.0,
-          ),
-          const HeaderWidget(
-              title: "You’re all done!",
-              firstLine:
-                  "Hang tight!  We are currently reviewing your account and will follow up with you in 2-3 business days. In the meantime, you can setup your inventory.",
-              secondLine: ""),
-          15.sh,
-          Spacer(),
-          CustmButton(onTap: () {}, color: AppColors.primary, title: "Got it!")
-        ],
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Spacer(),
+            Image.asset(
+              IconsAssets.done,
+              scale: 2.5,
+            ),
+            const HeaderWidget(
+                title: "You’re all done!",
+                firstLine:
+                    "Hang tight!  We are currently reviewing your account and will follow up with you in 2-3 business days. In the meantime, you can setup your inventory.",
+                secondLine: ""),
+            15.sh,
+            const Spacer(),
+            CustmButton(
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, MainPage.routeName);
+                },
+                color: AppColors.primary,
+                title: "Got it!"),
+            20.sh
+          ],
+        ),
       ),
     );
   }
