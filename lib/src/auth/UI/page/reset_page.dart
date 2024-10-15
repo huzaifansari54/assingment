@@ -84,9 +84,9 @@ class HeaderWidget extends StatelessWidget {
         children: [
           title.text(
               align: TextAlign.center, size: 32, fontWeight: FontWeight.w700),
+          20.sh,
           Row(
             children: [
-              20.sh,
               Flexible(
                 child: "$firstLine ".text(
                     fontWeight: FontWeight.w400,

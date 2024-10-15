@@ -25,7 +25,9 @@ class InfoFormWidget extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              30.sh,
               "Farm Info".text(size: 32, fontWeight: FontWeight.w700),
+              20.sh,
               CustomTextFeild(
                   onValidation: (p0) =>
                       p0 != null && p0.isEmpty ? "enter Bussines" : null,
@@ -52,60 +54,64 @@ class InfoFormWidget extends ConsumerWidget {
                   icon: IconsAssets.location,
                   hint: "City",
                   onChange: ref.read(authProvder.notifier).setCity),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 18, horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: AppColors.gray2,
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            "State".text(),
+                            SizedBox(
+                              height: 20,
+                              child: PopupMenuButton<String>(
+                                  padding: EdgeInsets.zero,
+                                  onSelected: (value) {
+                                    ref
+                                        .read(authProvder.notifier)
+                                        .setState(value);
+                                  },
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  itemBuilder: (_) => [
+                                        ...statew.values.map((e) =>
+                                            PopupMenuItem(child: e.name.text()))
+                                      ]),
+                            ),
+                          ],
+                        )),
+                    Container(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 18, horizontal: 10),
+                          vertical: 15, horizontal: 10),
                       decoration: BoxDecoration(
                           color: AppColors.gray2,
-                          borderRadius: BorderRadius.circular(12)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          "State".text(),
-                          SizedBox(
-                            height: 20,
-                            child: PopupMenuButton<String>(
-                                padding: EdgeInsets.zero,
-                                onSelected: (value) {
-                                  ref
-                                      .read(authProvder.notifier)
-                                      .setState(value);
-                                },
-                                icon: const Icon(Icons.arrow_drop_down),
-                                itemBuilder: (_) => [
-                                      ...statew.values.map((e) =>
-                                          PopupMenuItem(child: e.name.text()))
-                                    ]),
-                          ),
-                        ],
-                      )),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 10),
-                    decoration: BoxDecoration(
-                        color: AppColors.gray2,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: SizedBox(
-                      width: 200,
-                      child: TextFormField(
-                          validator: (p0) => p0 != null && p0.isEmpty
-                              ? "enter Zip code"
-                              : null,
-                          onChanged: (val) {
-                            ref.read(authProvder.notifier).setZip(12601);
-                          },
-                          decoration: const InputDecoration.collapsed(
-                              hintText: "Enter Zip Code",
-                              hintStyle: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: FontFamily.beVetnam,
-                                  fontWeight: FontWeight.w400))),
-                    ),
-                  )
-                ],
+                          borderRadius: BorderRadius.circular(10)),
+                      child: SizedBox(
+                        width: 200,
+                        child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            validator: (p0) => p0 != null && p0.isEmpty
+                                ? "enter Zip code"
+                                : null,
+                            onChanged: (val) {
+                              ref.read(authProvder.notifier).setZip(12601);
+                            },
+                            decoration: const InputDecoration.collapsed(
+                                hintText: "Enter Zip Code",
+                                hintStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: FontFamily.beVetnam,
+                                    fontWeight: FontWeight.w400))),
+                      ),
+                    )
+                  ],
+                ),
               ),
               50.sh,
               ArrowWidget(onBack: () {

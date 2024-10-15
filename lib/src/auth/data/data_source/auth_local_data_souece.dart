@@ -21,7 +21,7 @@ class AuthLocalDataSouece extends $AuthLocalDataSource {
   String getToken() {
     final token = _db.getString(Value.tokenKey);
     if (token == null) {
-      throw Exception("");
+      return "";
     }
     return token;
   }

@@ -41,12 +41,15 @@ class BessinessHoursFormWidget extends ConsumerWidget {
                               margin: EdgeInsets.symmetric(horizontal: 10),
                               padding: EdgeInsets.all(15),
                               decoration: BoxDecoration(
-                                  border: e.completed ? null : Border.all(),
+                                  border: e.completed
+                                      ? null
+                                      : Border.all(color: AppColors.gray2),
                                   color: e.selected
                                       ? AppColors.primary
-                                      : AppColors.gray2,
+                                      : AppColors.whiteColor,
                                   borderRadius: BorderRadius.circular(10)),
                               child: e.week.name.text(
+                                  fontWeight: FontWeight.w400,
                                   color: e.selected
                                       ? AppColors.whiteColor
                                       : AppColors.blackColor)),
@@ -80,7 +83,9 @@ class BessinessHoursFormWidget extends ConsumerWidget {
                                   ? AppColors.secondary
                                   : AppColors.gray2,
                               borderRadius: BorderRadius.circular(10)),
-                          child: e.value.text(color: AppColors.blackColor)),
+                          child: e.value.text(
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.blackColor)),
                     ))
                 .toList(),
           ),

@@ -8,7 +8,7 @@ import '../widget/custom_filed.dart';
 
 class VerfyOtpPage extends StatelessWidget {
   const VerfyOtpPage({super.key});
-  static const routeName = '/verify-otp';
+  static const routeName = '/verify_otp';
 
   @override
   Widget build(BuildContext context) {

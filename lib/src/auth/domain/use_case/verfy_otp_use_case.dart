@@ -4,10 +4,10 @@ import 'package:softlab/src/auth/domain/use_case/use_case.dart';
 import '../../../../core/exceptions/failures/auth_failure.dart';
 import '../repository/auth_repository.dart';
 
-class VerfyOtpUseCase extends UseCase<VerifyParam, Unit> {
+class VerifyOtpUseCase extends UseCase<VerifyParam, Unit> {
   final $AuthRepository _repository;
 
-  VerfyOtpUseCase({required $AuthRepository repository})
+  VerifyOtpUseCase({required $AuthRepository repository})
       : _repository = repository;
   @override
   TaskEither<AuthFailure, Unit> call({required VerifyParam param}) {

@@ -100,4 +100,15 @@ class AuthRepository implements $AuthRepository {
   Either<AuthFailure, String> getToken() {
     return Either.of(_localDataSource.getToken());
   }
+
+  @override
+  TaskEither<AuthFailure, Unit> logOut() {
+    return TaskEither.tryCatch(
+        () => _localDataSource.deleteToken(Value.tokenKey), (_, $_) {
+      if (_ is AuthException) {
+        return _.failure;
+      }
+      return const AuthFailure.interntOut();
+    }).map((e) => unit);
+  }
 }

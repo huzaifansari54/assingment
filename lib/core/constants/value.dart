@@ -19,7 +19,8 @@ class Endpoint {
   static const user = "${baseUrl}user/";
 
   static const register = "${user}register";
-  static const forgetPassword = "${user}forget_password";
+  static const forgetPassword = "${user}forgot-password";
+
   static const verfyOTP = "${user}verify_otp";
   static const resetPassaword = "${user}reset_password";
   static const login = "${user}login";

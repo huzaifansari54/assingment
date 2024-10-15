@@ -4,6 +4,7 @@ import 'package:softlab/core/constants/colors.dart';
 import 'package:softlab/core/constants/value.dart';
 import 'package:softlab/core/extentions/widgets_extension.dart';
 import 'package:softlab/src/auth/UI/controller/auth_controller.dart';
+import 'package:softlab/src/auth/UI/page/register/register.dart';
 import 'package:softlab/src/splash/page/widget/custom_button.dart';
 
 import '../widget/custom_filed.dart';
@@ -12,7 +13,7 @@ final _formKey = GlobalKey<FormState>();
 
 class SignInScreen extends ConsumerWidget {
   const SignInScreen({super.key});
-  static const routeName = "sign_in";
+  static const routeName = "/sign_in";
 
   @override
   Widget build(BuildContext context, ref) {
@@ -39,10 +40,15 @@ class SignInScreen extends ConsumerWidget {
                         fontWeight: FontWeight.w400,
                         size: 14,
                         color: AppColors.gray2),
-                    "Create account".text(
-                        size: 14,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.primary),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, RegeisterForm.routeName);
+                      },
+                      child: "Create account".text(
+                          size: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.primary),
+                    ),
                   ],
                 ),
                 Spacer(),
@@ -53,6 +59,7 @@ class SignInScreen extends ConsumerWidget {
                   onChange: ref.read(authProvder.notifier).setEmail,
                 ),
                 CustomTextFeild(
+                  passcode: true,
                   onValidation: (p0) => p0!.isEmpty ? "Enter Password" : null,
                   icon: IconsAssets.password,
                   hint: "Password",
@@ -70,7 +77,7 @@ class SignInScreen extends ConsumerWidget {
                           }
                         },
                         color: AppColors.primary,
-                        title: "Join the movement!",
+                        title: "Login",
                       ),
                       5.sh,
                       "or login with".text(

@@ -27,7 +27,7 @@ class CustmButton extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25), color: color),
         child: title.text(
-            fontWeight: FontWeight.w500, size: 14, color: AppColors.whiteColor),
+            fontWeight: FontWeight.w500, size: 16, color: AppColors.whiteColor),
       ),
     );
   }

@@ -48,17 +48,23 @@ class AuthRemoteDataSource implements $AuthRemoteDataSource {
 
   @override
   Future<void> forgetPassword({required String mobile}) async {
-    const endpoint = Endpoint.verfyOTP;
-    final body = {"mobile": mobile};
-    final response = await _client.post(endpoint,
-        data: body, options: Options(headers: Value.headerMultiPartOption()));
-    print(body);
+    try {
+      const endpoint = Endpoint.forgetPassword;
+      final body = {"mobile": mobile};
+      final response = await _client.post(endpoint,
+          data: body, options: Options(headers: Value.headerMultiPartOption()));
+      print(body);
 
-    final model = FailureModel.fromJson(response.data);
-    if (!model.success) {
-      throw AuthException(AuthFailure.unknown(model.message), model);
+      final model = FailureModel.fromJson(response.data);
+      if (!model.success) {
+        throw AuthException(AuthFailure.unknown(model.message), model);
+      }
+      print(response.data);
+    } on SocketException {
+      throw const AuthException(AuthFailure.interntOut());
+    } on DioException catch (e) {
+      throw dioErrorHandler(e);
     }
-    print(response.data);
   }
 
   @override
@@ -94,31 +100,39 @@ class AuthRemoteDataSource implements $AuthRemoteDataSource {
       {required String token,
       required String password,
       required String cpassword}) async {
-    const endpoint = Endpoint.verfyOTP;
-    final body = {"token": token, "password": password, "cpassword": cpassword};
-    final response = await _client.post(endpoint,
-        data: body, options: Options(headers: Value.headerMultiPartOption()));
-    print(body);
+    try {
+      const endpoint = Endpoint.verfyOTP;
+      final body = {
+        "token": token,
+        "password": password,
+        "cpassword": cpassword
+      };
+      final response = await _client.post(endpoint,
+          data: body, options: Options(headers: Value.headerMultiPartOption()));
+      print(body);
 
-    final model = FailureModel.fromJson(response.data);
-    if (!model.success) {
-      throw AuthException(AuthFailure.unknown(model.message), model);
-    }
-    print(response.data);
+      final model = FailureModel.fromJson(response.data);
+      if (!model.success) {
+        throw AuthException(AuthFailure.unknown(model.message), model);
+      }
+      print(response.data);
+    } catch (e) {}
   }
 
   @override
   Future<void> verfyOTP({required String otp}) async {
-    const endpoint = Endpoint.verfyOTP;
-    final body = {"otp": otp};
-    final response = await _client.post(endpoint,
-        data: body, options: Options(headers: Value.headerMultiPartOption()));
-    print(body);
+    try {
+      const endpoint = Endpoint.verfyOTP;
+      final body = {"otp": otp};
+      final response = await _client.post(endpoint,
+          data: body, options: Options(headers: Value.headerMultiPartOption()));
+      print(body);
 
-    final model = FailureModel.fromJson(response.data);
-    if (!model.success) {
-      throw AuthException(AuthFailure.unknown(model.message), model);
-    }
-    print(response.data);
+      final model = FailureModel.fromJson(response.data);
+      if (!model.success) {
+        throw AuthException(AuthFailure.unknown(model.message), model);
+      }
+      print(response.data);
+    } catch (e) {}
   }
 }

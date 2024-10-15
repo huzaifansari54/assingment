@@ -7,6 +7,7 @@ abstract interface class $AuthRepository {
       {required String email, required String password});
   Stream<bool> logedIn();
   Either<AuthFailure, String> getToken();
+  TaskEither<AuthFailure, Unit> logOut();
   TaskEither<AuthFailure, Unit> register(UserModelInfo userModelInfo);
   TaskEither<AuthFailure, Unit> forgetPassword({required String mobile});
   TaskEither<AuthFailure, Unit> verfyOTP({required String otp});

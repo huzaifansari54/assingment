@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:softlab/src/auth/UI/controller/auth_controller.dart';
 import 'package:softlab/src/auth/UI/page/forget_page.dart';
+import 'package:softlab/src/auth/UI/page/main_page.dart';
 import 'package:softlab/src/auth/UI/page/register/register.dart';
 import 'package:softlab/src/auth/UI/page/reset_page.dart';
 import 'package:softlab/src/auth/UI/page/sign_in.dart';
@@ -59,18 +60,21 @@ class MyApp extends ConsumerWidget {
       // SettingsController to display the correct theme.
       theme: ThemeData(),
       darkTheme: ThemeData.dark(),
-
-      // Define a function to handle named routes in order to support
-      // Flutter web url navigation and deep linking.
       onGenerateRoute: (RouteSettings routeSettings) {
         return MaterialPageRoute<void>(
           settings: routeSettings,
           builder: (BuildContext context) {
             switch (routeSettings.name) {
-              case SignInScreen.routeName:
+              case "/":
                 return auth.authanticated
-                    ? const SignInScreen()
-                    : const RegeisterForm();
+                    ? const MainPage()
+                    : const SignInScreen();
+              case RegeisterForm.routeName:
+                return const RegeisterForm();
+              case ForgetPage.routeName:
+                return const ForgetPage();
+              case SignInScreen.routeName:
+                return const SignInScreen();
 
               default:
                 return const SplashPage();

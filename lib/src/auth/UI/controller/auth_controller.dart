@@ -5,8 +5,10 @@ import 'package:softlab/core/constants/value.dart';
 import 'package:softlab/core/extentions/type_utils.dart';
 import 'package:softlab/core/extentions/widgets_extension.dart';
 import 'package:softlab/core/halper/helper.dart';
+import 'package:softlab/src/auth/UI/page/main_page.dart';
 import 'package:softlab/src/auth/UI/page/register/register.dart';
 import 'package:softlab/src/auth/domain/use_case/forget_password_use_case.dart';
+import 'package:softlab/src/auth/domain/use_case/log_out_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/login_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/register_use_case.dart';
 import 'package:softlab/src/auth/UI/controller/auth_state.dart';
@@ -17,7 +19,7 @@ import 'package:softlab/src/auth/domain/use_case/verfy_otp_use_case.dart';
 import '../../../../lc.dart';
 
 final authProvder = StateNotifierProvider<AuthController, AuthState>(
-    (_) => AuthController(lc(), lc(), lc(), lc(), lc(), lc()));
+    (_) => AuthController(lc(), lc(), lc(), lc(), lc(), lc(), lc()));
 final hoursProvder = StateNotifierProvider<BussinesFormNotifier,
     Map<WeeksState, List<ValueState>>>((_) => BussinesFormNotifier());
 
@@ -29,13 +31,15 @@ class AuthController extends StateNotifier<AuthState>
   final ForgetPasswordUseCase _forgetPasswordUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
   final VerifyOtpUseCase _verifyOtpUseCase;
+  final LogOutUseCase _logOutUseCase;
   AuthController(
       this._registerUseCase,
       this._loginUseCase,
       this._logedInUseCase,
       this._forgetPasswordUseCase,
       this._resetPasswordUseCase,
-      this._verifyOtpUseCase)
+      this._verifyOtpUseCase,
+      this._logOutUseCase)
       : super(AuthState.init()) {
     _logedInUseCase().listen(
       (auth) {
@@ -44,15 +48,29 @@ class AuthController extends StateNotifier<AuthState>
       onDone: () {},
     );
   }
+  logout(BuildContext ctx) async {
+    state = state.copyWith(isLoading: true);
 
-  register(BuildContext ctx) async {
+    final authOrFail = await _logOutUseCase(param: NoParam()).run();
+    authOrFail.match(
+        (failure) => state = state.copyWith(error: failure, isLoading: false),
+        (_) => state = state.copyWith(isLoading: false, authanticated: false));
+    if (!state.authanticated) {
+      Navigator.pushNamed(ctx, "/");
+    }
+  }
+
+  register(BuildContext ctx, VoidCallback onDone) async {
     state = state.copyWith(isLoading: true);
 
     final authOrFail = await _registerUseCase(param: state.userInfo).run();
     authOrFail.match((failure) {
       state = state.copyWith(error: failure, isLoading: false);
       showError(failure.$map(), ctx);
-    }, (_) => state = state.copyWith(isLoading: false));
+    }, (_) {
+      state = state.copyWith(isLoading: false);
+      onDone();
+    });
   }
 
   forgetPassword(BuildContext ctx) async {

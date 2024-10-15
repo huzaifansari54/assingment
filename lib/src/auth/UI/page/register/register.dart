@@ -59,7 +59,9 @@ class BasicFormWidget extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              20.sh,
               "Welcome!".text(size: 32, fontWeight: FontWeight.w700),
+              30.sh,
               const IconsHeader(),
               20.sh,
               Center(
@@ -113,11 +115,16 @@ class BasicFormWidget extends ConsumerWidget {
               15.sh,
               Row(
                 children: [
-                  "Login".text(
-                      size: 15,
-                      color: AppColors.blackColor,
-                      fontWeight: FontWeight.w400),
-                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, SignInScreen.routeName);
+                    },
+                    child: "Login".text(
+                        size: 15,
+                        color: AppColors.blackColor,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  const Spacer(),
                   SizedBox(
                     width: 200,
                     child: CustmButton(
@@ -196,13 +203,21 @@ class VerificationFormWidget extends ConsumerWidget {
           ),
           const Spacer(),
           ArrowWidget(
+            title: "Submit",
             onBack: () {
               ref.read(pageProvide).previousPage(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.ease);
             },
             onTap: () {
-              ref.read(authProvder.notifier).register(context);
+              ref.read(pageProvide).nextPage(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.ease);
+              // ref.read(authProvder.notifier).register(context, () {
+              //   ref.read(pageProvide).nextPage(
+              //       duration: const Duration(milliseconds: 200),
+              //       curve: Curves.ease);
+              // });
             },
           ),
         ],
@@ -225,7 +240,7 @@ class DoneFormWidget extends StatelessWidget {
             IconsAssets.done,
             scale: 2.0,
           ),
-          HeaderWidget(
+          const HeaderWidget(
               title: "You’re all done!",
               firstLine:
                   "Hang tight!  We are currently reviewing your account and will follow up with you in 2-3 business days. In the meantime, you can setup your inventory.",
@@ -240,11 +255,12 @@ class DoneFormWidget extends StatelessWidget {
 }
 
 class ArrowWidget extends StatelessWidget {
-  const ArrowWidget({
-    super.key,
-    required this.onBack,
-    required this.onTap,
-  });
+  const ArrowWidget(
+      {super.key,
+      required this.onBack,
+      required this.onTap,
+      this.title = "Continue"});
+  final String title;
   final VoidCallback onBack;
   final VoidCallback onTap;
 
@@ -258,7 +274,7 @@ class ArrowWidget extends StatelessWidget {
             onTap: onBack,
             child: Image.asset(
               IconsAssets.arrow,
-              scale: 2,
+              scale: 2.5,
             ),
           ),
           const Spacer(),
@@ -267,7 +283,7 @@ class ArrowWidget extends StatelessWidget {
             child: CustmButton(
               onTap: onTap,
               color: AppColors.primary,
-              title: "Continue",
+              title: title,
             ),
           ),
         ],
