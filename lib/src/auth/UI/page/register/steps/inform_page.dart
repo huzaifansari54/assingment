@@ -22,6 +22,7 @@ class InfoFormWidget extends ConsumerStatefulWidget {
 class _InfoFormWidgetState extends ConsumerState<InfoFormWidget> {
   final _formKey = GlobalKey<FormState>();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

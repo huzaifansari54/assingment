@@ -1,13 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:softlab/core/constants/value.dart';
 import 'package:softlab/core/extentions/type_utils.dart';
 import 'package:softlab/core/extentions/widgets_extension.dart';
 import 'package:softlab/core/halper/helper.dart';
 import 'package:softlab/src/auth/UI/page/main_page.dart';
 import 'package:softlab/src/auth/UI/page/register/register.dart';
+import 'package:softlab/src/auth/data/model/user_model.dart';
+import 'package:softlab/src/auth/domain/use_case/facebook_login_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/forget_password_use_case.dart';
+import 'package:softlab/src/auth/domain/use_case/google_login_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/log_out_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/login_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/register_use_case.dart';
@@ -15,23 +22,29 @@ import 'package:softlab/src/auth/UI/controller/auth_state.dart';
 import 'package:softlab/src/auth/domain/use_case/reset_password_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/user_loged_inUSe_case.dart';
 import 'package:softlab/src/auth/domain/use_case/verfy_otp_use_case.dart';
-
 import '../../../../lc.dart';
 
-final authProvder = StateNotifierProvider<AuthController, AuthState>(
-    (_) => AuthController(lc(), lc(), lc(), lc(), lc(), lc(), lc()));
+final authProvder = StateNotifierProvider<AuthController, AuthState>((_) =>
+    AuthController(
+        lc(), lc(), lc(), lc(), lc(), lc(), lc(), lc(), lc(), lc(), lc()));
 final hoursProvder = StateNotifierProvider<BussinesFormNotifier,
     Map<WeeksState, List<ValueState>>>((_) => BussinesFormNotifier());
 
 class AuthController extends StateNotifier<AuthState>
     with FormValidator, BussinessForm {
   final RegisterUseCase _registerUseCase;
+  final GoogleLoginUseCase _googleLoginUseCase;
+  final FacebookLoginUseCase _facebookLoginUseCase;
   final LoginUseCase _loginUseCase;
   final UserLogedInUseCase _logedInUseCase;
   final ForgetPasswordUseCase _forgetPasswordUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
   final VerifyOtpUseCase _verifyOtpUseCase;
   final LogOutUseCase _logOutUseCase;
+  // Auth Provider
+  final GoogleSignIn _googleSignIn;
+  final FacebookAuth _facebookAuth;
+
   AuthController(
       this._registerUseCase,
       this._loginUseCase,
@@ -39,7 +52,11 @@ class AuthController extends StateNotifier<AuthState>
       this._forgetPasswordUseCase,
       this._resetPasswordUseCase,
       this._verifyOtpUseCase,
-      this._logOutUseCase)
+      this._logOutUseCase,
+      this._googleLoginUseCase,
+      this._facebookLoginUseCase,
+      this._googleSignIn,
+      this._facebookAuth)
       : super(AuthState.init()) {
     _logedInUseCase().listen(
       (auth) {
@@ -64,6 +81,87 @@ class AuthController extends StateNotifier<AuthState>
     state = state.copyWith(isLoading: true);
 
     final authOrFail = await _registerUseCase(param: state.userInfo).run();
+    authOrFail.match((failure) {
+      state = state.copyWith(error: failure, isLoading: false);
+      showError(failure.$map(), ctx);
+    }, (_) {
+      state = state.copyWith(isLoading: false);
+      onDone();
+    });
+  }
+
+  signUpWithgoogle(TextEditingController $email, TextEditingController $name,
+      BuildContext context) async {
+    try {
+      state = state.copyWith(isLoading: true);
+      final user = await _googleSignIn.signIn();
+
+      if (user != null) {
+        // final userAuth = await user.authentication;
+        // final credential = GoogleAuthProvider.credential(
+        //     idToken: userAuth.idToken, accessToken: userAuth.accessToken);
+        // await FirebaseAuth.instance.signInWithCredential(credential);
+        final name = user.displayName ?? "unknow";
+        final email = user.email;
+        $email.text = email;
+        $name.text = name;
+        state =
+            state.copyWith(userInfo: state.userInfo.copyWith(type: "google"));
+        setSocialId(user.id);
+        setFullName(name);
+        setEmail(email);
+        state = state.copyWith(isLoading: false);
+
+        return;
+      }
+    } catch (e) {
+      context.snackbar(e.toString());
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  signWithgoogle(BuildContext ctx, TextEditingController $email) async {
+    try {
+      state = state.copyWith(isLoading: true);
+      final user = await _googleSignIn.signIn();
+
+      if (user != null) {
+        // final userAuth = await user.authentication;
+        // final credential = GoogleAuthProvider.credential(
+        //     idToken: userAuth.idToken, accessToken: userAuth.accessToken);
+        // await FirebaseAuth.instance.signInWithCredential(credential);
+
+        final email = user.email;
+        $email.text = email;
+
+        state =
+            state.copyWith(userInfo: state.userInfo.copyWith(type: "google"));
+        setSocialId(user.id);
+        setEmail(email);
+        state = state.copyWith(isLoading: false);
+
+        return;
+      }
+    } catch (e) {
+      ctx.snackbar(e.toString());
+      state = state.copyWith(isLoading: false);
+    }
+    // state = state.copyWith(isLoading: true);
+
+    // final authOrFail = await _googleLoginUseCase(param: state.userInfo).run();
+    // authOrFail.match((failure) {
+    //   state = state.copyWith(error: failure, isLoading: false);
+    //   showError(failure.$map(), ctx);
+    // }, (_) {
+    //   state = state.copyWith(isLoading: false);
+    //   onDone();
+    // });
+  }
+
+  signWithfacebook(BuildContext ctx, VoidCallback onDone) async {
+    state = state.copyWith(isLoading: true);
+
+    final authOrFail = await _facebookLoginUseCase(param: state.userInfo).run();
     authOrFail.match((failure) {
       state = state.copyWith(error: failure, isLoading: false);
       showError(failure.$map(), ctx);
@@ -111,10 +209,15 @@ class AuthController extends StateNotifier<AuthState>
 
   login(BuildContext ctx, VoidCallback onLogin) async {
     state = state.copyWith(isLoading: true);
-
+    final UserModelInfo(:social_id, :type) = state.userInfo;
+    final s_id = social_id.isEmpty ? null : social_id;
+    final typ = type.isEmpty ? null : type;
     final authOrFail = await _loginUseCase(
             param: LoginParam(
-                email: state.userInfo.email, password: state.userInfo.password))
+                socialId: s_id,
+                type: typ,
+                email: state.userInfo.email,
+                password: state.userInfo.password))
         .run();
     authOrFail.match((failure) {
       state = state.copyWith(error: failure, isLoading: false);
@@ -152,7 +255,7 @@ mixin FormValidator {
   }
 
   setRePasword(String val) {
-    final $user = state.userInfo.copyWith(role: val);
+    final $user = state.userInfo.copyWith(registration_proof: val);
     state = state.copyWith(userInfo: $user);
   }
 
@@ -172,6 +275,11 @@ mixin FormValidator {
   }
 
   setCity(String val) {
+    final $user = state.userInfo.copyWith(city: val);
+    state = state.copyWith(userInfo: $user);
+  }
+
+  setGoogleSign(String val) {
     final $user = state.userInfo.copyWith(city: val);
     state = state.copyWith(userInfo: $user);
   }

@@ -10,19 +10,20 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/value.dart';
 
 class CustomTextFeild extends StatelessWidget {
-  const CustomTextFeild({
-    super.key,
-    required this.icon,
-    required this.hint,
-    required this.onChange,
-    this.zip = false,
-    this.passcode = false,
-    this.type = TextInputType.emailAddress,
-    required this.onValidation,
-  });
+  const CustomTextFeild(
+      {super.key,
+      required this.icon,
+      required this.hint,
+      required this.onChange,
+      this.zip = false,
+      this.passcode = false,
+      this.type = TextInputType.emailAddress,
+      required this.onValidation,
+      this.controller});
 
   bool get obscure => (hint == "Password").or(re_password);
   bool get re_password => hint == "Re-enter Password";
+  final TextEditingController? controller;
   final bool passcode;
   final String icon;
   final String hint;
@@ -55,6 +56,7 @@ class CustomTextFeild extends StatelessWidget {
               SizedBox(
                   width: width * .65,
                   child: TextFormField(
+                      controller: controller,
                       keyboardType: type,
                       validator: onValidation,
                       obscureText: obscure,

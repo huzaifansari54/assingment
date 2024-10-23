@@ -50,8 +50,8 @@ abstract class UserModelInfo with _$UserModelInfo {
       informal_name: "",
       business_hours: {},
       device_token: "0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx",
-      social_id: "imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx",
-      type: "email/facebook/google/apple",
+      social_id: "",
+      type: "",
       bussinessName: "");
   factory UserModelInfo.fromJson(Map<String, Object?> json) =>
       _$UserModelInfoFromJson(json);

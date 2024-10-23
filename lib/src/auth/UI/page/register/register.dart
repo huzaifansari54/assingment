@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:softlab/core/constants/value.dart';
 import 'package:softlab/core/extentions/widgets_extension.dart';
 import 'package:softlab/src/auth/UI/controller/auth_controller.dart';
@@ -19,33 +21,8 @@ enum statew { UP, KP }
 final weekSatate = StateProvider((_) => Week.Mon);
 final pageProvide = Provider((_) => PageController());
 
-// class RegeisterForm extends ConsumerWidget {
-//   const RegeisterForm({super.key});
-//   static const routeName = '/register';
-
-//   @override
-//   Widget build(BuildContext context, ref) {
-//     final page = ref.watch(pageProvide);
-//     return Scaffold(
-//       body: SafeArea(
-//         child: PageView(
-//           physics: const NeverScrollableScrollPhysics(),
-//           controller: page,
-//           children: [
-//             BasicFormWidget(),
-//             BessinessHoursFormWidget(),
-//             InfoFormWidget(),
-//             VerificationFormWidget(),
-//             DoneFormWidget(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class BasicFormWidget extends ConsumerStatefulWidget {
-  BasicFormWidget({
+  const BasicFormWidget({
     super.key,
   });
 
@@ -57,6 +34,11 @@ class BasicFormWidget extends ConsumerStatefulWidget {
 
 class _BasicFormWidgetState extends ConsumerState<BasicFormWidget> {
   final _basicFormKey = GlobalKey<FormState>();
+  final email = TextEditingController();
+  final fullname = TextEditingController();
+  final password = TextEditingController();
+  final rPasswword = TextEditingController();
+  final phone = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +55,58 @@ class _BasicFormWidgetState extends ConsumerState<BasicFormWidget> {
                 20.sh,
                 "Welcome!".text(size: 32, fontWeight: FontWeight.w700),
                 30.sh,
-                const IconsHeader(),
+                IconsHeader(
+                  onAppleSignIn: () async {
+                    try {
+                      final credential =
+                          await SignInWithApple.getAppleIDCredential(
+                        scopes: [
+                          AppleIDAuthorizationScopes.email,
+                          AppleIDAuthorizationScopes.fullName,
+                        ],
+                        webAuthenticationOptions: WebAuthenticationOptions(
+                          // TODO: Set the `clientId` and `redirectUri` arguments to the values you entered in the Apple Developer portal during the setup
+                          clientId:
+                              'de.lunaone.flutter.signinwithappleexample.service',
+                          redirectUri:
+                              // For web your redirect URI needs to be the host of the "current page",
+                              // while for Android you will be using the API server that redirects back into your app via a deep link
+                              // NOTE(tp): For package local development use (as described in `Development.md`)
+                              // Uri.parse('https://siwa-flutter-plugin.dev/')
+                              kIsWeb
+                                  ? Uri.parse('https://{0.0.0.0}/')
+                                  : Uri.parse(
+                                      'https://flutter-sign-in-with-apple-example.glitch.me/callbacks/sign_in_with_apple',
+                                    ),
+                        ),
+                        // TODO: Remove these if you have no need for them
+                        nonce: 'example-nonce',
+                        state: 'example-state',
+                      );
+
+                      print(credential);
+                    } catch (e) {
+                      print(e);
+                    }
+                  },
+                  onFacebookSignIn: () {
+                    ref.read(authProvder.notifier).signWithfacebook(context,
+                        () {
+                      Navigator.pushNamed(context, InfoFormWidget.routeName);
+                    });
+                  },
+                  onGoogleSignIn: () {
+                    ref
+                        .read(authProvder.notifier)
+                        .signUpWithgoogle(email, fullname, context);
+                  },
+                ),
                 20.sh,
                 Center(
                     child: "or signup with".text(
                         fontWeight: FontWeight.w300, color: AppColors.gray2)),
                 CustomTextFeild(
+                  controller: fullname,
                   onValidation: (p0) =>
                       p0 != null && p0.isEmpty ? " enter full name" : null,
                   icon: IconsAssets.person,
@@ -88,6 +116,7 @@ class _BasicFormWidgetState extends ConsumerState<BasicFormWidget> {
                   },
                 ),
                 CustomTextFeild(
+                  controller: email,
                   onValidation: (p0) =>
                       p0 != null && p0.isEmpty ? " enter right email" : null,
                   icon: IconsAssets.email,
@@ -97,6 +126,7 @@ class _BasicFormWidgetState extends ConsumerState<BasicFormWidget> {
                   },
                 ),
                 CustomTextFeild(
+                  controller: phone,
                   type: TextInputType.phone,
                   onValidation: (p0) =>
                       p0 != null && p0.isEmpty ? " enter right number" : null,
@@ -107,6 +137,7 @@ class _BasicFormWidgetState extends ConsumerState<BasicFormWidget> {
                   },
                 ),
                 CustomTextFeild(
+                  controller: password,
                   onValidation: (p0) =>
                       p0 != null && p0.isEmpty ? " enter Password" : null,
                   icon: IconsAssets.password,
@@ -116,8 +147,9 @@ class _BasicFormWidgetState extends ConsumerState<BasicFormWidget> {
                   },
                 ),
                 CustomTextFeild(
+                  controller: rPasswword,
                   onValidation: (p0) =>
-                      auth.userInfo.password != auth.userInfo.role
+                      auth.userInfo.password != auth.userInfo.registration_proof
                           ? "wrong password re enter  "
                           : null,
                   icon: IconsAssets.password,
@@ -176,7 +208,7 @@ class VerificationFormWidget extends ConsumerWidget {
     final auth = ref.watch(authProvder);
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:softlab/core/extentions/widgets_extension.dart';
-
 import '../../../../../../core/constants/colors.dart';
 import '../../../controller/auth_controller.dart';
 import '../../reset_page.dart';

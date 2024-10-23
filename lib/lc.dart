@@ -1,11 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softlab/src/auth/data/data_source/auth_local_data_souece.dart';
 import 'package:softlab/src/auth/data/data_source/auth_remote_data_source.dart';
 import 'package:softlab/src/auth/data/repository/auth_repository_imp.dart';
 import 'package:softlab/src/auth/domain/repository/auth_repository.dart';
+import 'package:softlab/src/auth/domain/use_case/facebook_login_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/forget_password_use_case.dart';
+import 'package:softlab/src/auth/domain/use_case/google_login_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/log_out_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/login_use_case.dart';
 import 'package:softlab/src/auth/domain/use_case/register_use_case.dart';
@@ -27,8 +32,12 @@ Future<void> setup() async {
     validateStatus: (status) => status! < 500,
   )));
   await lc.isReady<SharedPreferences>();
+  lc.registerSingleton(GoogleSignIn());
+  lc.registerSingleton(FirebaseAuth.instance);
+  lc.registerSingleton(FacebookAuth.instance);
   lc
-    ..registerSingleton<$AuthRemoteDataSource>(AuthRemoteDataSource(lc()))
+    ..registerSingleton<$AuthRemoteDataSource>(
+        AuthRemoteDataSource(lc(), lc(), lc(), lc()))
     ..registerSingleton<$AuthLocalDataSource>(AuthLocalDataSouece(lc()))
     ..registerSingleton<$AuthRepository>(
         AuthRepository(localDataSource: lc(), remoteDataSource: lc()))
@@ -38,5 +47,7 @@ Future<void> setup() async {
     ..registerSingleton(ForgetPasswordUseCase(repository: lc()))
     ..registerSingleton(ResetPasswordUseCase(repository: lc()))
     ..registerSingleton(VerifyOtpUseCase(repository: lc()))
+    ..registerSingleton(FacebookLoginUseCase(repository: lc()))
+    ..registerSingleton(GoogleLoginUseCase(repository: lc()))
     ..registerSingleton(LogOutUseCase(repository: lc()));
 }

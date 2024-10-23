@@ -12,13 +12,24 @@ class LoginUseCase extends UseCase<LoginParam, Unit> {
       : _repository = repository;
   @override
   TaskEither<AuthFailure, Unit> call({required LoginParam param}) {
-    return _repository.login(email: param.email, password: param.password);
+    return _repository.login(
+        email: param.email,
+        password: param.password,
+        socialId: param.socialId,
+        type: param.type);
   }
 }
 
 final class LoginParam {
   final String email;
   final String password;
+  final String? socialId;
+  final String? type;
 
-  LoginParam({required this.email, required this.password});
+  LoginParam({
+    required this.email,
+    required this.password,
+    this.socialId,
+    this.type,
+  });
 }
