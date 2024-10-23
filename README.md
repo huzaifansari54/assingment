@@ -1,8 +1,6 @@
 # softlab
 
-A new Flutter project.
-
-assignment App Main Functionlty is authentication 
+assignment App Main Functionlty is authentication
 
 Features
 authentication
@@ -11,7 +9,7 @@ Technical Points
 clean structure code
 Dio for networking
 fpdart for functional programing
-riverpod  for state management
+riverpod for state management
 Get it for dependency injection
 Freezed for data class
 Use case
